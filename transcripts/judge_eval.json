@@ -1,4 +1,6 @@
 {
+  "judge_mode": "deterministic MOCK_LLM",
+  "method": "Lexical reference-overlap, citation-overlap, fallback, and unsafe-claim checks; not semantic LLM judgments.",
   "rows": [
     {
       "query": "How are ticket priorities assigned?",

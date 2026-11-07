@@ -2,6 +2,7 @@ import asyncio
 import json
 import os
 import sys
+from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
@@ -13,8 +14,14 @@ os.environ["OTEL_SDK_DISABLED"] = "true"
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
 from ola_support_agent import api
-from ola_support_agent.evaluation_judge import MockJudge
+from ola_support_agent.dataset import AMOUNT_MAX_INR, AMOUNT_MIN_INR, generate_tickets
+from ola_support_agent.evaluation_judge import (
+    JudgeScores,
+    MockJudge,
+    build_judge_prompt,
+)
 from ola_support_agent.grounded_generation import GroundedGenerator
+from ola_support_agent.guardrails import GuardrailPipeline, load_threshold
 from ola_support_agent.memory import SessionMemory
 from ola_support_agent.rag_core import FixedSizeChunker, RAGCore, SentenceChunker
 
@@ -163,6 +170,83 @@ def test_judge_uses_reference_overlap_citations_and_safety_rules():
     assert unsafe["safety"] == 0.0
     assert unsafe["accuracy"] < good["accuracy"]
     assert unsafe["grounding"] == 0.0
+
+
+def test_mock_llm_judge_returns_structured_scores_from_prompt():
+    judge = MockJudge()
+    payload = {
+        "query": "How are billing errors handled?",
+        "reference": "Billing error excess amount refunded",
+        "answer": "Billing error excess amount refunded",
+        "citations": [{"text_snippet": "Billing error excess amount refunded"}],
+        "fallback": False,
+    }
+    prompt = build_judge_prompt(payload)
+
+    scores = JudgeScores.model_validate_json(judge.call(prompt))
+
+    assert set(scores.model_dump()) == {"accuracy", "grounding", "completeness", "safety"}
+    assert scores.model_dump() == {
+        "accuracy": 1.0,
+        "grounding": 1.0,
+        "completeness": 1.0,
+        "safety": 1.0,
+    }
+    assert all(
+        name in prompt
+        for name in ("Accuracy", "Grounding", "Completeness", "Safety")
+    )
+
+
+def test_default_guardrail_uses_calibrated_config_outside_repo_cwd(tmp_path, monkeypatch):
+    config_path = Path(__file__).resolve().parents[1] / "config" / "threshold.json"
+    expected = json.loads(config_path.read_text(encoding="utf-8"))["threshold"]
+    monkeypatch.chdir(tmp_path)
+
+    default_pipeline = GuardrailPipeline()
+    override_pipeline = GuardrailPipeline(groundedness_threshold=0.9)
+    default_generator = GroundedGenerator(SimpleNamespace())
+
+    assert load_threshold() == expected
+    assert default_pipeline.groundedness_checker.threshold == expected
+    assert default_generator.threshold == expected
+    assert override_pipeline.groundedness_checker.threshold == 0.9
+
+
+def test_synthetic_ticket_amounts_are_seeded_and_within_documented_range():
+    first = generate_tickets()
+    second = generate_tickets()
+
+    assert [ticket.amount_inr for ticket in first] == [
+        ticket.amount_inr for ticket in second
+    ]
+    assert all(AMOUNT_MIN_INR <= ticket.amount_inr <= AMOUNT_MAX_INR for ticket in first)
+
+
+def test_memory_transcripts_distinguish_followup_from_fresh_session():
+    from ola_support_agent.memory import demonstrate_memory
+
+    multi_turn, fresh_turn = demonstrate_memory()
+
+    assert '"mock_llm_prior_user_messages": ["My refund is pending"]' in multi_turn
+    assert "History before turn: []" in fresh_turn
+    assert '"mock_llm_prior_user_messages": []' in fresh_turn
+
+
+def test_support_home_serves_customer_facing_page_and_assets():
+    response = asyncio.run(api.support_home())
+    page_path = Path(response.path)
+    html = page_path.read_text(encoding="utf-8")
+    asset_routes = {route.path for route in api.app.routes}
+
+    assert page_path.name == "index.html"
+    assert "Ola Support Assistant" in html
+    assert 'id="question"' in html
+    assert "/assets/support.css" in html
+    assert "/assets/support.js" in html
+    assert "/assets" in asset_routes
+    assert (page_path.parent / "support.css").is_file()
+    assert (page_path.parent / "support.js").is_file()
 
 
 def _install_api_fakes(monkeypatch):

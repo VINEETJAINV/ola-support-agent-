@@ -10,4 +10,4 @@ OUT What is the capital of France? => 0.1095
 OUT How do I cook pasta? => 0.0389
 In-scope mean: 0.6141
 Out-of-scope mean: 0.0742
-Threshold between cluster means: 0.2812
+Midpoint between nearest observed scores: 0.2812

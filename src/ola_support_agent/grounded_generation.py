@@ -9,6 +9,7 @@ from dataclasses import dataclass
 os.environ["CREWAI_DISABLE_TELEMETRY"] = "true"
 os.environ["OTEL_SDK_DISABLED"] = "true"
 
+from ola_support_agent.guardrails import load_threshold
 from ola_support_agent.rag_core import RAGCore, Chunk
 
 
@@ -66,16 +67,9 @@ class GroundedGenerator:
         self.collection_name = collection_name
         self.top_k = top_k
         
-        # Load threshold from config
-        if threshold is not None:
-            self.threshold = threshold
-        else:
-            try:
-                with open("config/threshold.json", "r") as f:
-                    config = json.load(f)
-                    self.threshold = config.get("threshold", 0.3)
-            except FileNotFoundError:
-                self.threshold = 0.3
+        self.threshold = load_threshold() if threshold is None else threshold
+        if isinstance(self.threshold, bool) or not 0.0 <= self.threshold <= 1.0:
+            raise ValueError("Groundedness threshold must be between 0 and 1")
         
         # In-memory cache
         self._cache: Dict[str, GroundedResponse] = {}
@@ -184,8 +178,6 @@ class GroundedGenerator:
         }
 
 
-# Import json here to avoid circular imports
-import json
 
 if __name__ == "__main__":
     import sys

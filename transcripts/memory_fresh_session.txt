@@ -1,0 +1,5 @@
+FRESH SESSION DEMO: no previous conversation state
+
+History before turn: []
+User: How long will it take?
+MOCK_LLM: {"mock_llm_prior_user_messages": [], "current_input": "How long will it take?"}

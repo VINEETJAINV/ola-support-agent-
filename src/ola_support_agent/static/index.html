@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#172554">
+    <meta name="description" content="Get help with Ola support policies and ticket status.">
+    <title>Ola Support | Help Center</title>
+    <link rel="stylesheet" href="/assets/support.css">
+    <script src="/assets/support.js" defer></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Ola Support home">
+        <span class="brand-mark" aria-hidden="true">o</span>
+        <span>ola<span class="brand-light"> support</span></span>
+      </a>
+      <nav class="topnav" aria-label="Main navigation">
+        <a class="active" href="#help">Help center</a>
+        <a href="#topics">Browse topics</a>
+        <a href="#contact">Contact</a>
+      </nav>
+      <button class="new-chat-button" id="new-chat" type="button">
+        <span aria-hidden="true">＋</span> New conversation
+      </button>
+    </header>
+
+    <main>
+      <section class="hero" id="help">
+        <div class="hero-content">
+          <div class="eyebrow"><span class="status-dot"></span> OLA HELP CENTER</div>
+          <h1>How can we help<br>you today?</h1>
+          <p>Ask a question about rides, payments, refunds, or support tickets.</p>
+        </div>
+        <div class="hero-art" aria-hidden="true">
+          <div class="orbit orbit-one"></div>
+          <div class="orbit orbit-two"></div>
+          <div class="hero-spark">✳</div>
+          <div class="hero-card"><span>ola</span><small>Here to help</small></div>
+        </div>
+      </section>
+
+      <section class="content-grid">
+        <aside class="topics-panel" id="topics">
+          <div class="section-heading">
+            <div>
+              <span class="eyebrow dark-eyebrow">HELP, YOUR WAY</span>
+              <h2>Popular topics</h2>
+            </div>
+          </div>
+          <button class="topic-card" type="button" data-prompt="What is the refund policy for overcharging?">
+            <span class="topic-icon lilac" aria-hidden="true">₹</span>
+            <span class="topic-copy"><strong>Payments &amp; refunds</strong><small>Charges, refunds and credits</small></span>
+            <span class="topic-arrow" aria-hidden="true">↗</span>
+          </button>
+          <button class="topic-card" type="button" data-prompt="How can I contact Ola support?">
+            <span class="topic-icon mint" aria-hidden="true">◎</span>
+            <span class="topic-copy"><strong>Getting support</strong><small>Contact options and hours</small></span>
+            <span class="topic-arrow" aria-hidden="true">↗</span>
+          </button>
+          <button class="topic-card" type="button" data-prompt="How are urgent support tickets prioritized?">
+            <span class="topic-icon peach" aria-hidden="true">↗</span>
+            <span class="topic-copy"><strong>Ticket priorities</strong><small>Response times and escalation</small></span>
+            <span class="topic-arrow" aria-hidden="true">↗</span>
+          </button>
+          <button class="topic-card" type="button" data-prompt="How does Ola communicate service outages?">
+            <span class="topic-icon sky" aria-hidden="true">⌁</span>
+            <span class="topic-copy"><strong>Service updates</strong><small>Outages and disruptions</small></span>
+            <span class="topic-arrow" aria-hidden="true">↗</span>
+          </button>
+          <div class="help-note" id="contact">
+            <span class="note-icon" aria-hidden="true">?</span>
+            <span><strong>Need a hand?</strong><small>Ask our support assistant a question.</small></span>
+          </div>
+        </aside>
+
+        <section class="chat-panel" aria-label="Support conversation">
+          <div class="chat-header">
+            <div class="assistant-avatar" aria-hidden="true"><span>o</span></div>
+            <div class="assistant-title">
+              <h2>Ola Support Assistant</h2>
+              <span><span class="status-dot"></span> Ready to help</span>
+            </div>
+            <button class="icon-button" id="clear-chat" type="button" aria-label="Clear conversation" title="Clear conversation">↻</button>
+          </div>
+
+          <div class="conversation" id="conversation" aria-live="polite" aria-label="Conversation messages">
+            <div class="welcome-card" id="welcome">
+              <div class="welcome-spark" aria-hidden="true">✳</div>
+              <h3>Hi there! What can I help with?</h3>
+              <p>I can explain support policies or help check a ticket. Ask me anything to get started.</p>
+              <div class="suggestions" aria-label="Suggested questions">
+                <button type="button" data-prompt="How long do refunds usually take?">How long do refunds take?</button>
+                <button type="button" data-prompt="What are Ola support hours?">Support hours</button>
+                <button type="button" data-prompt="How are tickets escalated?">Ticket escalation</button>
+              </div>
+            </div>
+            <div class="messages" id="messages"></div>
+            <div class="typing-indicator" id="typing" hidden>
+              <span></span><span></span><span></span><small>Finding an answer…</small>
+            </div>
+          </div>
+
+          <form class="composer" id="ask-form">
+            <label class="sr-only" for="ticket-id">Optional ticket ID</label>
+            <div class="ticket-row">
+              <span class="ticket-label">Checking a ticket?</span>
+              <input id="ticket-id" name="ticket_id" type="text" placeholder="Enter ticket ID (e.g. TKT-0001)" autocomplete="off">
+            </div>
+            <div class="input-row">
+              <label class="sr-only" for="question">Your question</label>
+              <textarea id="question" name="query" rows="1" maxlength="4000" placeholder="Write your question here…" required></textarea>
+              <button class="send-button" id="send-button" type="submit" aria-label="Send question">
+                <span>Send</span><span aria-hidden="true">↑</span>
+              </button>
+            </div>
+            <div class="composer-footer">
+              <span>Support answers are based on Ola's help information.</span>
+              <span><kbd>Enter</kbd> to send <span class="footer-divider">·</span> <kbd>Shift + Enter</kbd> for a new line</span>
+            </div>
+          </form>
+        </section>
+      </section>
+    </main>
+    <footer class="page-footer">
+      <span>Ola Support Help Center</span>
+      <span>This demo uses sample support data and a local assistant.</span>
+    </footer>
+  </body>
+</html>

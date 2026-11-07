@@ -3,29 +3,29 @@ GROUNDED GENERATION DEMO
 ============================================================
 
 Q: What is the refund policy for defective products?
-A: For overcharging or billing errors, the excess amount is refunded to the original payment method within 3-5 business days. Ola provides refunds and compensation based on incident type and customer imp...
+A: Relevant knowledge-base evidence: For overcharging or billing errors, the excess amount is refunded to the original payment method within 3-5 business days. Ola provides refunds and compensation based...
 Confidence: 0.4530, Fallback: False, Cache hit: False
-Citations: 5
+Citations: 3
 
 Q: How long does Ola take to respond to P1 tickets?
-A: P2 High severity tickets require first response within 1 hour and resolution within 8 business hours. P1 tickets involve complete service outages or safety incidents requiring immediate response withi...
+A: Relevant knowledge-base evidence: P1 tickets involve complete service outages or safety incidents requiring immediate response within 15 minutes. P2 High severity tickets require first response within...
 Confidence: 0.6897, Fallback: False, Cache hit: False
-Citations: 5
+Citations: 3
 
 Q: What happens on the third repeat complaint?
-A: A repeat complaint is defined as three or more tickets from the same customer within 30 days on the same category. On the third occurrence, the ticket is escalated to Tier 2 with a mandatory follow-up...
+A: Relevant knowledge-base evidence: A repeat complaint is defined as three or more tickets from the same customer within 30 days on the same category. On the third occurrence, the ticket is escalated to...
 Confidence: 0.7155, Fallback: False, Cache hit: False
-Citations: 5
+Citations: 3
 
 Q: What are the business hours for support?
-A: Standard support operations run Monday through Saturday 6 AM to 11 PM IST with reduced Sunday staffing 8 AM to 8 PM IST. Phone support operates 6 AM to 11 PM IST daily with callback scheduling availab...
-Confidence: 0.6460, Fallback: False, Cache hit: False
-Citations: 5
+A: Relevant knowledge-base evidence: Email tickets are created automatically and triaged within 1 hour during business hours. National holidays and major festival days follow Sunday hours with 50% staffi...
+Confidence: 0.4755, Fallback: False, Cache hit: False
+Citations: 2
 
 Q: What compensation do drivers get for P1 outages?
-A: P1 tickets involve complete service outages or safety incidents requiring immediate response within 15 minutes. P2 tickets cover major feature failures or payment errors with a 1-hour response target....
+A: Relevant knowledge-base evidence: P1 tickets involve complete service outages or safety incidents requiring immediate response within 15 minutes. Service outages lasting more than 30 minutes qualify a...
 Confidence: 0.5662, Fallback: False, Cache hit: False
-Citations: 5
+Citations: 3
 
 Q: What is the capital of France?
 A: I don't have enough information to answer this question based on the available knowledge base....

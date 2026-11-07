@@ -5,7 +5,8 @@
     "status": "Open",
     "resolution_time_hours": 16.46,
     "days_since_created": 23,
-    "escalated": false
+    "escalated": false,
+    "amount_inr": 240.83
   },
   {
     "record_id": "TKT-0002",
@@ -13,7 +14,8 @@
     "status": "Resolved",
     "resolution_time_hours": 42.72,
     "days_since_created": 1,
-    "escalated": false
+    "escalated": false,
+    "amount_inr": 3496.31
   },
   {
     "record_id": "TKT-0003",
@@ -21,7 +23,8 @@
     "status": "In Progress",
     "resolution_time_hours": 2.4,
     "days_since_created": 6,
-    "escalated": false
+    "escalated": false,
+    "amount_inr": 762.47
   },
   {
     "record_id": "TKT-0004",
@@ -29,7 +32,8 @@
     "status": "Resolved",
     "resolution_time_hours": 32.62,
     "days_since_created": 8,
-    "escalated": false
+    "escalated": false,
+    "amount_inr": 2339.53
   },
   {
     "record_id": "TKT-0005",
@@ -37,7 +41,8 @@
     "status": "Open",
     "resolution_time_hours": 50.42,
     "days_since_created": 10,
-    "escalated": false
+    "escalated": false,
+    "amount_inr": 3374.65
   },
   {
     "record_id": "TKT-0006",
@@ -45,7 +50,8 @@
     "status": "In Progress",
     "resolution_time_hours": 7.81,
     "days_since_created": 12,
-    "escalated": false
+    "escalated": false,
+    "amount_inr": 3975.11
   },
   {
     "record_id": "TKT-0007",
@@ -53,7 +59,8 @@
     "status": "Closed",
     "resolution_time_hours": 58.21,
     "days_since_created": 23,
-    "escalated": false
+    "escalated": false,
+    "amount_inr": 2293.29
   },
   {
     "record_id": "TKT-0008",
@@ -61,7 +68,8 @@
     "status": "Open",
     "resolution_time_hours": 6.13,
     "days_since_created": 9,
-    "escalated": false
+    "escalated": false,
+    "amount_inr": 2516.45
   },
   {
     "record_id": "TKT-0009",
@@ -69,7 +77,8 @@
     "status": "Resolved",
     "resolution_time_hours": 41.78,
     "days_since_created": 22,
-    "escalated": false
+    "escalated": false,
+    "amount_inr": 144.83
   },
   {
     "record_id": "TKT-0010",
@@ -77,7 +86,8 @@
     "status": "Resolved",
     "resolution_time_hours": 70.94,
     "days_since_created": 27,
-    "escalated": false
+    "escalated": false,
+    "amount_inr": 2190.32
   },
   {
     "record_id": "TKT-0011",
@@ -85,7 +95,8 @@
     "status": "Open",
     "resolution_time_hours": 45.95,
     "days_since_created": 11,
-    "escalated": false
+    "escalated": false,
+    "amount_inr": 1893.25
   },
   {
     "record_id": "TKT-0012",
@@ -93,7 +104,8 @@
     "status": "In Progress",
     "resolution_time_hours": 50.68,
     "days_since_created": 21,
-    "escalated": false
+    "escalated": false,
+    "amount_inr": 4268.83
   },
   {
     "record_id": "TKT-0013",
@@ -101,7 +113,8 @@
     "status": "Resolved",
     "resolution_time_hours": 52.63,
     "days_since_created": 5,
-    "escalated": true
+    "escalated": true,
+    "amount_inr": 2757.57
   },
   {
     "record_id": "TKT-0014",
@@ -109,7 +122,8 @@
     "status": "In Progress",
     "resolution_time_hours": 49.7,
     "days_since_created": 7,
-    "escalated": false
+    "escalated": false,
+    "amount_inr": 3788.82
   },
   {
     "record_id": "TKT-0015",
@@ -117,7 +131,8 @@
     "status": "Closed",
     "resolution_time_hours": 16.88,
     "days_since_created": 1,
-    "escalated": false
+    "escalated": false,
+    "amount_inr": 2198.64
   },
   {
     "record_id": "TKT-0016",
@@ -125,7 +140,8 @@
     "status": "Escalated",
     "resolution_time_hours": 65.79,
     "days_since_created": 18,
-    "escalated": true
+    "escalated": true,
+    "amount_inr": 922.13
   },
   {
     "record_id": "TKT-0017",
@@ -133,7 +149,8 @@
     "status": "In Progress",
     "resolution_time_hours": 28.79,
     "days_since_created": 29,
-    "escalated": false
+    "escalated": false,
+    "amount_inr": 4261.83
   },
   {
     "record_id": "TKT-0018",
@@ -141,7 +158,8 @@
     "status": "Open",
     "resolution_time_hours": 53.77,
     "days_since_created": 17,
-    "escalated": true
+    "escalated": true,
+    "amount_inr": 4110.09
   },
   {
     "record_id": "TKT-0019",
@@ -149,7 +167,8 @@
     "status": "Resolved",
     "resolution_time_hours": 29.06,
     "days_since_created": 7,
-    "escalated": false
+    "escalated": false,
+    "amount_inr": 1910.5
   },
   {
     "record_id": "TKT-0020",
@@ -157,7 +176,8 @@
     "status": "Open",
     "resolution_time_hours": 54.54,
     "days_since_created": 27,
-    "escalated": false
+    "escalated": false,
+    "amount_inr": 523.93
   },
   {
     "record_id": "TKT-0021",
@@ -165,7 +185,8 @@
     "status": "Resolved",
     "resolution_time_hours": 30.68,
     "days_since_created": 2,
-    "escalated": false
+    "escalated": false,
+    "amount_inr": 2586.53
   },
   {
     "record_id": "TKT-0022",
@@ -173,7 +194,8 @@
     "status": "Resolved",
     "resolution_time_hours": 18.48,
     "days_since_created": 17,
-    "escalated": false
+    "escalated": false,
+    "amount_inr": 2505.09
   },
   {
     "record_id": "TKT-0023",
@@ -181,7 +203,8 @@
     "status": "Open",
     "resolution_time_hours": 49.24,
     "days_since_created": 17,
-    "escalated": false
+    "escalated": false,
+    "amount_inr": 3872.89
   },
   {
     "record_id": "TKT-0024",
@@ -189,7 +212,8 @@
     "status": "Resolved",
     "resolution_time_hours": 21.49,
     "days_since_created": 5,
-    "escalated": false
+    "escalated": false,
+    "amount_inr": 3006.22
   },
   {
     "record_id": "TKT-0025",
@@ -197,7 +221,8 @@
     "status": "Closed",
     "resolution_time_hours": 19.33,
     "days_since_created": 16,
-    "escalated": false
+    "escalated": false,
+    "amount_inr": 2558.05
   },
   {
     "record_id": "TKT-0026",
@@ -205,7 +230,8 @@
     "status": "Resolved",
     "resolution_time_hours": 45.21,
     "days_since_created": 26,
-    "escalated": true
+    "escalated": true,
+    "amount_inr": 2897.04
   },
   {
     "record_id": "TKT-0027",
@@ -213,7 +239,8 @@
     "status": "Resolved",
     "resolution_time_hours": 55.02,
     "days_since_created": 17,
-    "escalated": true
+    "escalated": true,
+    "amount_inr": 1915.78
   },
   {
     "record_id": "TKT-0028",
@@ -221,7 +248,8 @@
     "status": "Closed",
     "resolution_time_hours": 43.32,
     "days_since_created": 15,
-    "escalated": false
+    "escalated": false,
+    "amount_inr": 292.15
   },
   {
     "record_id": "TKT-0029",
@@ -229,7 +257,8 @@
     "status": "Closed",
     "resolution_time_hours": 59.96,
     "days_since_created": 9,
-    "escalated": false
+    "escalated": false,
+    "amount_inr": 352.99
   },
   {
     "record_id": "TKT-0030",
@@ -237,7 +266,8 @@
     "status": "In Progress",
     "resolution_time_hours": 6.13,
     "days_since_created": 23,
-    "escalated": false
+    "escalated": false,
+    "amount_inr": 4712.42
   },
   {
     "record_id": "TKT-0031",
@@ -245,7 +275,8 @@
     "status": "Open",
     "resolution_time_hours": 55.26,
     "days_since_created": 4,
-    "escalated": false
+    "escalated": false,
+    "amount_inr": 4203.54
   },
   {
     "record_id": "TKT-0032",
@@ -253,7 +284,8 @@
     "status": "Closed",
     "resolution_time_hours": 38.23,
     "days_since_created": 19,
-    "escalated": true
+    "escalated": true,
+    "amount_inr": 1515.99
   },
   {
     "record_id": "TKT-0033",
@@ -261,7 +293,8 @@
     "status": "In Progress",
     "resolution_time_hours": 52.69,
     "days_since_created": 6,
-    "escalated": false
+    "escalated": false,
+    "amount_inr": 4449.32
   },
   {
     "record_id": "TKT-0034",
@@ -269,7 +302,8 @@
     "status": "In Progress",
     "resolution_time_hours": 27.2,
     "days_since_created": 28,
-    "escalated": false
+    "escalated": false,
+    "amount_inr": 2635.15
   },
   {
     "record_id": "TKT-0035",
@@ -277,7 +311,8 @@
     "status": "Open",
     "resolution_time_hours": 24.67,
     "days_since_created": 18,
-    "escalated": false
+    "escalated": false,
+    "amount_inr": 560.05
   },
   {
     "record_id": "TKT-0036",
@@ -285,7 +320,8 @@
     "status": "Resolved",
     "resolution_time_hours": 51.11,
     "days_since_created": 1,
-    "escalated": true
+    "escalated": true,
+    "amount_inr": 4285.66
   },
   {
     "record_id": "TKT-0037",
@@ -293,7 +329,8 @@
     "status": "Closed",
     "resolution_time_hours": 5.57,
     "days_since_created": 7,
-    "escalated": false
+    "escalated": false,
+    "amount_inr": 2942.67
   },
   {
     "record_id": "TKT-0038",
@@ -301,7 +338,8 @@
     "status": "Escalated",
     "resolution_time_hours": 52.22,
     "days_since_created": 28,
-    "escalated": false
+    "escalated": false,
+    "amount_inr": 4667.3
   },
   {
     "record_id": "TKT-0039",
@@ -309,7 +347,8 @@
     "status": "Escalated",
     "resolution_time_hours": 58.24,
     "days_since_created": 6,
-    "escalated": false
+    "escalated": false,
+    "amount_inr": 3412.3
   },
   {
     "record_id": "TKT-0040",
@@ -317,7 +356,8 @@
     "status": "Resolved",
     "resolution_time_hours": 29.89,
     "days_since_created": 27,
-    "escalated": false
+    "escalated": false,
+    "amount_inr": 515.79
   },
   {
     "record_id": "TKT-0041",
@@ -325,7 +365,8 @@
     "status": "Resolved",
     "resolution_time_hours": 7.54,
     "days_since_created": 12,
-    "escalated": false
+    "escalated": false,
+    "amount_inr": 3132.6
   },
   {
     "record_id": "TKT-0042",
@@ -333,7 +374,8 @@
     "status": "Closed",
     "resolution_time_hours": 14.2,
     "days_since_created": 17,
-    "escalated": true
+    "escalated": true,
+    "amount_inr": 3945.09
   },
   {
     "record_id": "TKT-0043",
@@ -341,7 +383,8 @@
     "status": "Escalated",
     "resolution_time_hours": 18.36,
     "days_since_created": 29,
-    "escalated": false
+    "escalated": false,
+    "amount_inr": 4499.62
   },
   {
     "record_id": "TKT-0044",
@@ -349,7 +392,8 @@
     "status": "Closed",
     "resolution_time_hours": 7.5,
     "days_since_created": 20,
-    "escalated": false
+    "escalated": false,
+    "amount_inr": 1689.81
   },
   {
     "record_id": "TKT-0045",
@@ -357,7 +401,8 @@
     "status": "Closed",
     "resolution_time_hours": 66.74,
     "days_since_created": 27,
-    "escalated": false
+    "escalated": false,
+    "amount_inr": 2668.01
   },
   {
     "record_id": "TKT-0046",
@@ -365,7 +410,8 @@
     "status": "Escalated",
     "resolution_time_hours": 62.32,
     "days_since_created": 28,
-    "escalated": false
+    "escalated": false,
+    "amount_inr": 3520.72
   },
   {
     "record_id": "TKT-0047",
@@ -373,7 +419,8 @@
     "status": "In Progress",
     "resolution_time_hours": 19.46,
     "days_since_created": 25,
-    "escalated": false
+    "escalated": false,
+    "amount_inr": 875.75
   },
   {
     "record_id": "TKT-0048",
@@ -381,7 +428,8 @@
     "status": "In Progress",
     "resolution_time_hours": 52.73,
     "days_since_created": 25,
-    "escalated": false
+    "escalated": false,
+    "amount_inr": 4249.38
   },
   {
     "record_id": "TKT-0049",
@@ -389,7 +437,8 @@
     "status": "Resolved",
     "resolution_time_hours": 21.71,
     "days_since_created": 30,
-    "escalated": true
+    "escalated": true,
+    "amount_inr": 3915.28
   },
   {
     "record_id": "TKT-0050",
@@ -397,6 +446,7 @@
     "status": "Resolved",
     "resolution_time_hours": 22.92,
     "days_since_created": 1,
-    "escalated": true
+    "escalated": true,
+    "amount_inr": 297.98
   }
 ]

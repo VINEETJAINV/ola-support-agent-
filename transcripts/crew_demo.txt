@@ -1,5 +1,5 @@
 RAG tool query: What are the business hours for support?
-Standard support operations run Monday through Saturday 6 AM to 11 PM IST with reduced Sunday staffing 8 AM to 8 PM IST. Phone support operates 6 AM to 11 PM IST daily with callback scheduling available. Ola retains support ticket data according to regulatory and operational requirements. Critical P1 incidents receive 24/7 coverage year-round regardless of holidays. National holidays and major festival days follow Sunday hours with 50% staffing.
+Relevant knowledge-base evidence: Email tickets are created automatically and triaged within 1 hour during business hours. National holidays and major festival days follow Sunday hours with 50% staffing.
 
 Ticket lookup query: Check ticket TKT-0001 status
 {

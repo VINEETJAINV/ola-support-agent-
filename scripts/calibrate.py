@@ -111,4 +111,7 @@ if __name__ == "__main__":
             f.write(f"OUT {query} => {score:.4f}\n")
         f.write(f"In-scope mean: {measured['in_scope_avg']:.4f}\n")
         f.write(f"Out-of-scope mean: {measured['out_of_scope_avg']:.4f}\n")
-        f.write(f"Threshold between cluster means: {measured['threshold']:.4f}\n")
+        f.write(
+            "Midpoint between nearest observed scores: "
+            f"{measured['threshold']:.4f}\n"
+        )

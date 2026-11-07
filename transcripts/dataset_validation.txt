@@ -7,6 +7,7 @@ Status weights: {'Open': 0.15, 'In Progress': 0.25, 'Escalated': 0.1, 'Resolved'
 Escalated probability: 0.2
 Resolution time range: 0.5-72.0 hours
 Reasoning: Covers quick fixes (30 min) to complex multi-day investigations (3 days)
+Synthetic amount range: INR 50.0-5000.0
 Days since created range: 0-30 days
 
 Category counts:

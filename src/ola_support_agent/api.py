@@ -16,7 +16,8 @@ os.environ["CREWAI_DISABLE_TELEMETRY"] = "true"
 os.environ["OTEL_SDK_DISABLED"] = "true"
 
 from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect, Request
-from fastapi.responses import JSONResponse
+from fastapi.responses import FileResponse, JSONResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 import uvicorn
 
@@ -97,6 +98,18 @@ app = FastAPI(
     version="1.0.0",
     lifespan=lifespan
 )
+
+SUPPORT_PAGE = Path(__file__).parent / "static" / "index.html"
+app.mount(
+    "/assets",
+    StaticFiles(directory=SUPPORT_PAGE.parent),
+    name="support-assets",
+)
+
+
+@app.get("/", include_in_schema=False)
+async def support_home():
+    return FileResponse(SUPPORT_PAGE)
 
 
 # Setup JSONL logging

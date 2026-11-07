@@ -31,6 +31,10 @@ ESCALATED_PROB = 0.20
 RESOLUTION_TIME_MIN = 0.5
 RESOLUTION_TIME_MAX = 72.0
 
+# Synthetic fare/transaction amount range, in INR
+AMOUNT_MIN_INR = 50.0
+AMOUNT_MAX_INR = 5000.0
+
 # Days since created: 0-30 days
 DAYS_SINCE_CREATED_MIN = 0
 DAYS_SINCE_CREATED_MAX = 30
@@ -52,6 +56,7 @@ class SupportTicket:
     resolution_time_hours: float
     days_since_created: int
     escalated: bool
+    amount_inr: float = AMOUNT_MIN_INR
 
 
 def generate_tickets(
@@ -60,6 +65,7 @@ def generate_tickets(
 ) -> List[SupportTicket]:
     """Generate support tickets with deterministic randomness."""
     rng = random.Random(seed)
+    amount_rng = random.Random(seed + 1)
     tickets = []
     
     for i in range(num_records):
@@ -68,6 +74,7 @@ def generate_tickets(
         escalated = rng.random() < ESCALATED_PROB
         resolution_time = round(rng.uniform(RESOLUTION_TIME_MIN, RESOLUTION_TIME_MAX), 2)
         days_since_created = rng.randint(DAYS_SINCE_CREATED_MIN, DAYS_SINCE_CREATED_MAX)
+        amount_inr = round(amount_rng.uniform(AMOUNT_MIN_INR, AMOUNT_MAX_INR), 2)
         
         ticket = SupportTicket(
             record_id=f"TKT-{i+1:04d}",
@@ -75,7 +82,8 @@ def generate_tickets(
             status=status,
             resolution_time_hours=resolution_time,
             days_since_created=days_since_created,
-            escalated=escalated
+            escalated=escalated,
+            amount_inr=amount_inr,
         )
         tickets.append(ticket)
     
@@ -161,6 +169,7 @@ def main():
         f.write(f"Escalated probability: {ESCALATED_PROB}\n")
         f.write(f"Resolution time range: {RESOLUTION_TIME_MIN}-{RESOLUTION_TIME_MAX} hours\n")
         f.write(f"Reasoning: Covers quick fixes (30 min) to complex multi-day investigations (3 days)\n")
+        f.write(f"Synthetic amount range: INR {AMOUNT_MIN_INR}-{AMOUNT_MAX_INR}\n")
         f.write(f"Days since created range: {DAYS_SINCE_CREATED_MIN}-{DAYS_SINCE_CREATED_MAX} days\n")
         f.write("\nCategory counts:\n")
         for cat, count in validation['category_counts'].items():
