@@ -6,6 +6,8 @@ import json
 import time
 import uuid
 import logging
+import re
+from pathlib import Path
 from typing import Dict, Any, Optional, List
 from datetime import datetime
 from contextlib import asynccontextmanager
@@ -138,6 +140,23 @@ def mask_for_logging(text: str) -> str:
     return PIIMasker.mask(text)[0]
 
 
+def _conversation_context(history: List[Dict[str, str]]) -> str:
+    """Keep a bounded, session-local window of prior messages for follow-ups."""
+    recent = history[-4:]
+    return "\n".join(
+        f"{message['role']}: {message['content']}" for message in recent
+    )
+
+
+def _retrieval_context(history: List[Dict[str, str]]) -> str:
+    """Use prior customer questions, not whole answers, to disambiguate retrieval."""
+    prior_queries = [
+        message["content"] for message in history
+        if message["role"] == "human"
+    ]
+    return "\n".join(prior_queries[-2:])
+
+
 @app.get("/health", response_model=HealthResponse)
 async def health_check():
     started = time.time()
@@ -154,6 +173,11 @@ async def ask(request: AskRequest, http_request: Request):
     session_id = request.session_id or f"session-{trace_id}"
     user_query = request.query
     ticket_id = request.ticket_id
+
+    history = session_memory.get_history(session_id)
+    turn_number = len(history) // 2 + 1
+    context = _conversation_context(history)
+    retrieval_context = _retrieval_context(history)
     
     # Input guardrails
     masked_query, guardrail_result = guardrail_pipeline.process_input(user_query)
@@ -190,25 +214,29 @@ async def ask(request: AskRequest, http_request: Request):
     cache_key = f"{session_id}:{' '.join(masked_query.casefold().split())}:{ticket_id or ''}"
     if cache_key in response_cache:
         cache_stats["hits"] += 1
-        cached = response_cache[cache_key]
-        cached["trace_id"] = trace_id
+        cached = {
+            **response_cache[cache_key],
+            "trace_id": trace_id,
+            "turn_number": turn_number,
+        }
         response = AskResponse(**cached)
+        session_memory.add_message(session_id, "human", masked_query)
+        session_memory.add_message(session_id, "ai", response.answer)
         log_request(trace_id, "POST", "/ask", {"query": mask_for_logging(user_query)}, 
                    response.model_dump(), (time.time() - start_time) * 1000, mask_for_logging(user_query))
         return response
     
     cache_stats["misses"] += 1
     
-    # Get conversation history
-    history = session_memory.get_history(session_id)
-    turn_number = len(history) // 2 + 1
-    
     # Run crew query
-    crew_result = await run_crew_query(masked_query, ticket_id)
+    crew_result = await run_crew_query(
+        masked_query, ticket_id, context=context, retrieval_context=retrieval_context
+    )
     
     # Run autogen review
     # Get retrieved context for review
-    retrieved = rag_core.retrieve(masked_query, collection_name="sentence", top_k=5)
+    retrieval_query = f"{retrieval_context}\n{masked_query}".strip()
+    retrieved = rag_core.retrieve(retrieval_query, collection_name="sentence", top_k=5)
     retrieved_context = "\n".join([r["text"] for r in retrieved])
     
     review_result = await run_review_stage(crew_result["answer"], retrieved_context)
@@ -221,7 +249,7 @@ async def ask(request: AskRequest, http_request: Request):
         ticket_info = crew_result.get("ticket_info")
     
     # Get citations from grounded generation
-    gen_result = grounded_generator.generate(masked_query)
+    gen_result = grounded_generator.generate(masked_query, context=retrieval_context)
     citations = gen_result.citations
     
     # Groundedness check
@@ -260,10 +288,18 @@ async def add_document(request: AddDocumentRequest, http_request: Request):
     start_time = time.time()
     trace_id = get_trace_id()
     
-    doc_id = request.title.lower().replace(" ", "-").replace("_", "-")
-    file_path = f"./kb/{doc_id}.txt"
+    title = request.title.strip()
+    if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9 _-]{0,99}", title):
+        raise HTTPException(status_code=400, detail="Invalid document title.")
+
+    doc_id = re.sub(r"[- _]+", "-", title.lower()).strip("-")
+    kb_dir = Path("./kb").resolve()
+    kb_dir.mkdir(parents=True, exist_ok=True)
+    destination = (kb_dir / f"{doc_id}.txt").resolve()
+    if not destination.is_relative_to(kb_dir):
+        raise HTTPException(status_code=400, detail="Invalid document title.")
     
-    with open(file_path, "w", encoding="utf-8") as f:
+    with open(destination, "w", encoding="utf-8") as f:
         f.write(request.content)
     
     # Re-index
@@ -321,13 +357,23 @@ async def websocket_chat(websocket: WebSocket):
                 log_request(trace_id, "WS", "/ws/chat", {"query": mask_for_logging(user_query)}, response,
                             (time.time() - start_time) * 1000, mask_for_logging(user_query))
                 continue
+
+            history = session_memory.get_history(session_id)
+            turn_number = len(history) // 2 + 1
+            context = _conversation_context(history)
+            retrieval_context = _retrieval_context(history)
             
             # Check cache
             cache_key = f"{session_id}:{' '.join(masked_query.casefold().split())}:{ticket_id or ''}"
             if cache_key in response_cache:
                 cache_stats["hits"] += 1
-                cached = response_cache[cache_key]
-                cached["trace_id"] = trace_id
+                cached = {
+                    **response_cache[cache_key],
+                    "trace_id": trace_id,
+                    "turn_number": turn_number,
+                }
+                session_memory.add_message(session_id, "human", masked_query)
+                session_memory.add_message(session_id, "ai", cached["answer"])
                 await websocket.send_text(json.dumps(cached))
                 log_request(trace_id, "WS", "/ws/chat", {"query": mask_for_logging(user_query)}, cached,
                             (time.time() - start_time) * 1000, mask_for_logging(user_query))
@@ -336,10 +382,13 @@ async def websocket_chat(websocket: WebSocket):
             cache_stats["misses"] += 1
             
             # Run crew query
-            crew_result = await run_crew_query(masked_query, ticket_id)
+            crew_result = await run_crew_query(
+                masked_query, ticket_id, context=context, retrieval_context=retrieval_context
+            )
             
             # Run autogen review
-            retrieved = rag_core.retrieve(masked_query, collection_name="sentence", top_k=5)
+            retrieval_query = f"{retrieval_context}\n{masked_query}".strip()
+            retrieved = rag_core.retrieve(retrieval_query, collection_name="sentence", top_k=5)
             retrieved_context = "\n".join([r["text"] for r in retrieved])
             
             review_result = await run_review_stage(crew_result["answer"], retrieved_context)
@@ -351,7 +400,7 @@ async def websocket_chat(websocket: WebSocket):
                 ticket_info = crew_result.get("ticket_info")
             
             # Get citations
-            gen_result = grounded_generator.generate(masked_query)
+            gen_result = grounded_generator.generate(masked_query, context=retrieval_context)
             citations = gen_result.citations
             
             # Groundedness check
@@ -368,6 +417,7 @@ async def websocket_chat(websocket: WebSocket):
                 "confidence": gen_result.confidence,
                 "fallback_triggered": gen_result.fallback_triggered,
                 "session_id": session_id,
+                "turn_number": turn_number,
                 "trace_id": trace_id
             }
             

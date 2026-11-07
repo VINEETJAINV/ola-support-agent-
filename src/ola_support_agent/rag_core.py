@@ -121,6 +121,10 @@ class RAGCore:
         sentence_count = 0
         
         for doc_id, text in docs.items():
+            # Remove chunks from the prior version before indexing the current file.
+            self.fixed_collection.delete(where={"doc_id": doc_id})
+            self.sentence_collection.delete(where={"doc_id": doc_id})
+
             fixed_chunks = self.fixed_chunker.chunk(text, doc_id)
             sentence_chunks = self.sentence_chunker.chunk(text, doc_id)
             

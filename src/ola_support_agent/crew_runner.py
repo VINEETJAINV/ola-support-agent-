@@ -20,6 +20,10 @@ from ola_support_agent.guardrails import GuardrailPipeline
 from ola_support_agent.schemas import CrewResponse
 
 
+_CURRENT_QUERY_MARKER = "Current user query: "
+_RETRIEVAL_CONTEXT_MARKER = "Prior user queries for retrieval context: "
+
+
 class RAGLookupTool(BaseTool):
     name: str = "rag_lookup"
     description: str = "Search the Ola support knowledge base for policy information."
@@ -33,7 +37,21 @@ class RAGLookupTool(BaseTool):
     def _run(self, query: str) -> str:
         rag = RAGCore()
         generator = GroundedGenerator(rag, collection_name="sentence")
-        response = generator.generate(query)
+        current_query = query
+        retrieval_context = ""
+        if _CURRENT_QUERY_MARKER in query:
+            search_input = query.split(_CURRENT_QUERY_MARKER, 1)[1]
+            if _RETRIEVAL_CONTEXT_MARKER in search_input:
+                current_query, retrieval_context = search_input.split(
+                    _RETRIEVAL_CONTEXT_MARKER, 1
+                )
+            else:
+                current_query = search_input
+            current_query = current_query.strip()
+            retrieval_context = retrieval_context.split(
+                "\nAnswer the current query", 1
+            )[0].strip()
+        response = generator.generate(current_query, context=retrieval_context)
         type(self).last_citations = response.citations
         if response.fallback_triggered:
             return "I don't have enough information in the knowledge base to answer this question."
@@ -70,7 +88,12 @@ class CheckTicketStatusTool(BaseTool):
         )
 
 
-async def run_crew_query(user_query: str, ticket_id: Optional[str] = None) -> Dict[str, Any]:
+async def run_crew_query(
+    user_query: str,
+    ticket_id: Optional[str] = None,
+    context: str = "",
+    retrieval_context: str = "",
+) -> Dict[str, Any]:
     """Run a crew query with the mock LLM."""
     CheckTicketStatusTool.last_result = {}
     RAGLookupTool.last_citations = []
@@ -105,8 +128,19 @@ async def run_crew_query(user_query: str, ticket_id: Optional[str] = None) -> Di
     tasks = []
     
     # Retrieval task
+    context_section = (
+        f"Prior conversation context (use only to resolve references):\n{context}\n\n"
+        if context else ""
+    )
     retrieval_task = Task(
-        description=f"Search the knowledge base for information relevant to: '{user_query}'. Return the key policy details with citations.",
+        description=(
+            f"{context_section}Search the knowledge base using this input:\n"
+            f"{_CURRENT_QUERY_MARKER}{user_query}\n"
+            f"{_RETRIEVAL_CONTEXT_MARKER}{retrieval_context}\n"
+            "Answer the current query, keeping "
+            "its wording and intent distinct from prior context. Return relevant policy "
+            "details with citations."
+        ),
         expected_output="Policy information with document citations relevant to the query",
         agent=retrieval_agent
     )
@@ -123,7 +157,13 @@ async def run_crew_query(user_query: str, ticket_id: Optional[str] = None) -> Di
     
     # Compose task
     compose_task = Task(
-        description=f"Compose a final response to the customer query: '{user_query}'. Use the policy information from retrieval and ticket data from lookup (if available). Provide a clear, helpful answer with citations where appropriate.",
+        description=(
+            f"{context_section}Compose a final response to the current customer query: "
+            f"'{user_query}'. Use prior context only to interpret follow-up references; "
+            "do not replace or broaden the current query. Use policy information from "
+            "retrieval and ticket data from lookup (if available). Provide a clear, "
+            "helpful answer with citations where appropriate."
+        ),
         expected_output="Complete customer-facing response with policy citations and ticket data if applicable",
         agent=composer_agent
     )

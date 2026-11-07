@@ -12,6 +12,37 @@ os.environ["OTEL_SDK_DISABLED"] = "true"
 from ola_support_agent.rag_core import RAGCore, Chunk
 
 
+_STOP_WORDS = {
+    "a", "an", "and", "are", "as", "at", "base", "be", "by", "customer",
+    "do", "does", "for", "from", "how", "i", "in", "information", "is", "it",
+    "knowledge", "me", "of", "on", "or", "policy", "relevant", "support",
+    "the", "ticket", "to", "was", "what", "when", "where", "which", "who",
+    "why", "with", "evidence",
+}
+
+
+def _tokens(text: str) -> set[str]:
+    """Return lightweight normalized content words for evidence matching."""
+    words = re.findall(r"[a-z0-9]+", text.lower())
+    normalized = set()
+    for word in words:
+        if word == "response":
+            word = "respond"
+        elif word.endswith("ies") and len(word) > 4:
+            word = word[:-3] + "y"
+        elif word.endswith("ed") and len(word) > 4:
+            word = word[:-2]
+        elif word.endswith("ing") and len(word) > 5:
+            word = word[:-3]
+            if len(word) > 3 and word[-1] == word[-2]:
+                word = word[:-1]
+        elif word.endswith("s") and len(word) > 3:
+            word = word[:-1]
+        if word not in _STOP_WORDS and len(word) > 1:
+            normalized.add(word)
+    return normalized
+
+
 @dataclass
 class GroundedResponse:
     answer: str
@@ -55,16 +86,18 @@ class GroundedGenerator:
         """Normalize query for cache key."""
         return re.sub(r'\s+', ' ', query.lower().strip())
     
-    def generate(self, query: str) -> GroundedResponse:
+    def generate(self, query: str, context: str = "") -> GroundedResponse:
         """Generate a grounded response for the query."""
         self._call_count += 1
         
         normalized = self._normalize_query(query)
+        normalized_context = self._normalize_query(context)
+        cache_key = f"{normalized}\n{normalized_context}"
         
         # Check cache
-        if normalized in self._cache:
+        if cache_key in self._cache:
             self._cache_hits += 1
-            cached = self._cache[normalized]
+            cached = self._cache[cache_key]
             return GroundedResponse(
                 answer=cached.answer,
                 citations=cached.citations,
@@ -74,13 +107,32 @@ class GroundedGenerator:
             )
         
         # Retrieve relevant chunks
+        retrieval_query = f"{context}\n{query}".strip()
         results = self.rag.retrieve(
-            query, 
+            retrieval_query,
             collection_name=self.collection_name, 
             top_k=self.top_k
         )
         
-        if not results or results[0]["score"] < self.threshold:
+        query_tokens = _tokens(query)
+        context_tokens = _tokens(context)
+        query_relevant = []
+        context_relevant = []
+        for result in results:
+            evidence_tokens = _tokens(result["text"])
+            overlap = query_tokens & evidence_tokens
+            if result["score"] >= self.threshold and overlap:
+                query_relevant.append((result, len(overlap)))
+            elif result["score"] >= self.threshold:
+                context_overlap = context_tokens & evidence_tokens
+                if context_overlap:
+                    context_relevant.append((result, len(context_overlap)))
+        # Use prior queries only when the current follow-up has no direct lexical match.
+        relevant = query_relevant or context_relevant
+        relevant.sort(key=lambda item: (item[1], item[0]["score"]), reverse=True)
+        selected = [item[0] for item in relevant[:3]]
+
+        if not selected:
             response = GroundedResponse(
                 answer="I don't have enough information to answer this question based on the available knowledge base.",
                 citations=[],
@@ -89,22 +141,20 @@ class GroundedGenerator:
                 cache_hit=False
             )
         else:
-            # Build answer from retrieved chunks
-            answer_parts = []
+            # This MOCK_LLM path returns selected evidence, not a synthesized answer.
             citations = []
-            
-            for r in results:
-                if r["score"] >= self.threshold:
-                    answer_parts.append(r["text"])
-                    citations.append({
-                        "doc_id": r["doc_id"],
-                        "chunk_id": r["chunk_id"],
-                        "score": round(r["score"], 4),
-                        "text_snippet": r["text"][:200]
-                    })
-            
-            answer = " ".join(answer_parts) if answer_parts else "I don't have enough information to answer this question."
-            confidence = results[0]["score"] if results else 0.0
+            for result in selected:
+                citations.append({
+                    "doc_id": result["doc_id"],
+                    "chunk_id": result["chunk_id"],
+                    "score": round(result["score"], 4),
+                    "text_snippet": result["text"][:200]
+                })
+
+            answer = "Relevant knowledge-base evidence: " + " ".join(
+                result["text"] for result in selected
+            )
+            confidence = max(result["score"] for result in selected)
             
             response = GroundedResponse(
                 answer=answer,
@@ -115,7 +165,7 @@ class GroundedGenerator:
             )
         
         # Cache the response
-        self._cache[normalized] = response
+        self._cache[cache_key] = response
         
         return GroundedResponse(
             answer=response.answer,

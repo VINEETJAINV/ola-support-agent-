@@ -24,7 +24,7 @@ The generator exports the deterministic `SUPPORT_TICKETS` list using **seed 42**
 - Guardrails mask fixed-format phone numbers, detect prompt injection, and refuse low-similarity answers. Use fabricated names, addresses, and payment data; those free-text values are outside the phone masker scope.
 - FastAPI exposes `POST /ask`, `POST /add-document`, health/cache endpoints, and `WS /ws/chat`. Request logs are JSON Lines with trace IDs, timings, and masked query text. The request cap is 4,000 estimated tokens.
 - The AutoGen review uses a two-agent `RoundRobinGroupChat` with `max_turns=2`, structured `VerdictModel` output, and a local deterministic replay client. The demo shows both an unchanged approval and a revision of an injected refund promise.
-- `evaluation_judge.py` scores 15 queries for Accuracy, Grounding, Completeness, and Safety under MOCK_LLM. `governance.py` demonstrates least autonomy, Medium risk classification, and oversized-request rejection.
+- `evaluation_judge.py` scores 15 queries using deterministic token-overlap precision/recall against explicit reference facts, citation overlap for grounding, and unsafe-claim pattern checks for safety; it is a transparent heuristic report, not an LLM judgment. `governance.py` demonstrates least autonomy, Medium risk classification, and oversized-request rejection.
 
 ## Setup and run
 
