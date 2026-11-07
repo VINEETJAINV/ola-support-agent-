@@ -1,0 +1,27 @@
+{
+  "threshold": 0.2812468707561493,
+  "in_scope_scores": [
+    0.45299190282821655,
+    0.6897333264350891,
+    0.7154520153999329,
+    0.6459622383117676,
+    0.5662086606025696
+  ],
+  "out_of_scope_scores": [
+    0.10950183868408203,
+    0.03885912895202637
+  ],
+  "in_scope_avg": 0.6140696287155152,
+  "out_of_scope_avg": 0.0741804838180542,
+  "in_scope_queries": [
+    "What is the refund policy for defective products?",
+    "How long does Ola take to respond to P1 tickets?",
+    "What happens on the third repeat complaint?",
+    "What are the business hours for support?",
+    "What compensation do drivers get for P1 outages?"
+  ],
+  "out_of_scope_queries": [
+    "What is the capital of France?",
+    "How do I cook pasta?"
+  ]
+}

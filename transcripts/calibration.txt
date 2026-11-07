@@ -1,0 +1,13 @@
+CALIBRATION TRANSCRIPT
+============================================================
+Top-1 cosine scores by query:
+IN  What is the refund policy for defective products? => 0.4530
+IN  How long does Ola take to respond to P1 tickets? => 0.6897
+IN  What happens on the third repeat complaint? => 0.7155
+IN  What are the business hours for support? => 0.6460
+IN  What compensation do drivers get for P1 outages? => 0.5662
+OUT What is the capital of France? => 0.1095
+OUT How do I cook pasta? => 0.0389
+In-scope mean: 0.6141
+Out-of-scope mean: 0.0742
+Threshold between cluster means: 0.2812

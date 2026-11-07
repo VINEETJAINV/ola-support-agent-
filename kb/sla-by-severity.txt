@@ -1,0 +1,1 @@
+Ola's Service Level Agreements define response and resolution targets by severity tier. P1 Critical incidents require first response within 15 minutes and resolution within 4 hours. P2 High severity tickets require first response within 1 hour and resolution within 8 business hours. P3 Medium severity targets 4-hour response and 24-hour resolution during business days.

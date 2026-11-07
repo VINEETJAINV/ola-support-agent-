@@ -1,0 +1,1 @@
+Service credits are issued as Ola ride credits for SLA breaches or service degradation. P1 SLA breach grants 200 INR credit per affected ride up to 1000 INR per incident. P2 breach grants 100 INR credit per affected ride up to 500 INR. Credits are automatically applied to the customer wallet within 24 hours of breach confirmation and expire in 30 days.
