@@ -1,0 +1,8 @@
+API TestClient demo: POST /ask, POST /add-document, two WebSocket turns, client disconnect, then a successful POST /ask.
+Disconnect observed: WebSocket disconnected: ws-c822b028
+Captured JSONL request logs (trace_id and duration_ms included; phone values masked):
+{"trace_id": "ef85cb76", "timestamp": "2026-11-07T09:43:34.136206Z", "method": "POST", "path": "/ask", "duration_ms": 603.24, "request": "What is the refund policy? My number is [PHONE_REDACTED].", "response_status": "unknown", "response_size": 1225}
+{"trace_id": "38b6bbd5", "timestamp": "2026-11-07T09:43:36.202472Z", "method": "POST", "path": "/add-document", "duration_ms": 2061.35, "request": {"title": "api-demo-0d5be997ea604824b5ea32a916c41256"}, "response_status": "unknown", "response_size": 109}
+{"trace_id": "b3b21541", "timestamp": "2026-11-07T09:43:36.888003Z", "method": "WS", "path": "/ws/chat", "duration_ms": 678.86, "request": "How do refunds work?", "response_status": "unknown", "response_size": 1221}
+{"trace_id": "014c63cc", "timestamp": "2026-11-07T09:43:37.527162Z", "method": "WS", "path": "/ws/chat", "duration_ms": 637.83, "request": "What about my number [PHONE_REDACTED]?", "response_status": "unknown", "response_size": 1221}
+{"trace_id": "e5e8437f", "timestamp": "2026-11-07T09:43:38.100389Z", "method": "POST", "path": "/ask", "duration_ms": 567.93, "request": "What are support hours? Call me at [PHONE_REDACTED].", "response_status": "unknown", "response_size": 1100}

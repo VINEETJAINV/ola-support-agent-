@@ -1,5 +1,7 @@
 import asyncio
+import io
 import json
+import logging
 import os
 import sys
 from pathlib import Path
@@ -21,7 +23,7 @@ from ola_support_agent.evaluation_judge import (
     build_judge_prompt,
 )
 from ola_support_agent.grounded_generation import GroundedGenerator
-from ola_support_agent.guardrails import GuardrailPipeline, load_threshold
+from ola_support_agent.guardrails import GuardrailPipeline, PIIMasker, load_threshold
 from ola_support_agent.memory import SessionMemory
 from ola_support_agent.rag_core import FixedSizeChunker, RAGCore, SentenceChunker
 
@@ -70,6 +72,46 @@ def test_current_query_match_takes_priority_over_historical_context():
         "How fast is the response?", context="Which support policy applies?"
     )
     assert [citation["doc_id"] for citation in response.citations] == ["current"]
+
+
+@pytest.mark.parametrize(
+    "phone",
+    [
+        "(555) 123-4567",
+        "555-123-4567",
+        "555 123 4567",
+        "+91 98765 43210",
+        "9876543210",
+    ],
+)
+def test_phone_formats_are_masked_in_inputs_and_request_logs(phone):
+    text = f"Call me at {phone} about my ticket."
+    expected = "Call me at [PHONE_REDACTED] about my ticket."
+
+    masked, details = PIIMasker.mask(text)
+
+    assert masked == expected
+    assert details["pii_detected"]
+    assert api.mask_for_logging(text) == expected
+    log_stream = io.StringIO()
+    handler = logging.StreamHandler(log_stream)
+    api.logger.addHandler(handler)
+    try:
+        api.log_request(
+            "test-trace",
+            "POST",
+            "/ask",
+            {"query": text},
+            {"status": "ok"},
+            1.0,
+            api.mask_for_logging(text),
+        )
+    finally:
+        api.logger.removeHandler(handler)
+
+    log_entry = json.loads(log_stream.getvalue())
+    assert log_entry["request"] == expected
+    assert phone not in log_stream.getvalue()
 
 
 class _FakeCollection:

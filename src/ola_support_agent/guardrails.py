@@ -26,7 +26,15 @@ class GuardrailResult:
 class PIIMasker:
     """Masks fixed-format PII (phone numbers) from input."""
     
-    PHONE_PATTERN = re.compile(r'\b\d{10}\b|\b\d{3}-\d{3}-\d{4}\b|\b\+\d{1,3}\s?\d{10}\b|\b\d{5}\s\d{5}\b')
+    PHONE_PATTERN = re.compile(
+        r'(?<!\d)(?:'
+        r'\(\d{3}\)\s?\d{3}-\d{4}'
+        r'|\d{3}[- ]\d{3}[- ]\d{4}'
+        r'|\+\d{1,3}\s?(?:\d{5}\s\d{5}|\d{10})'
+        r'|\d{5}\s\d{5}'
+        r'|\d{10}'
+        r')(?!\d)'
+    )
     
     @classmethod
     def mask(cls, text: str) -> Tuple[str, Dict[str, Any]]:

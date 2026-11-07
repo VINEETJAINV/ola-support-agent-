@@ -20,7 +20,7 @@ and has **20.0% escalated tickets**; the per-category and per-status counts are 
 
 This capstone is a local, deterministic support assistant for policy questions and support-ticket lookups. It combines a seeded ticket dataset, a twelve-document policy knowledge base, two retrieval indexes, a three-agent CrewAI workflow, session memory, guardrails, an AutoGen review stage, evaluation, governance checks, and a FastAPI service.
 
-The graded language-model paths use deterministic `MOCK_LLM` implementations and do not require a model API key. SentenceTransformers embeddings run locally. The embedding model must be present in the local Hugging Face cache before running in offline mode; no embedding weights are committed to this repository.
+The graded language-model paths use deterministic `MOCK_LLM` implementations and require zero API keys. SentenceTransformers embeddings run locally. The embedding model must be present in the local Hugging Face cache before running in offline mode; no embedding weights are committed to this repository.
 
 ## Quick start
 
@@ -49,6 +49,7 @@ Generate the dataset and run the reproducible checks and demos:
 .venv\Scripts\python.exe -m ola_support_agent.evaluation
 .venv\Scripts\python.exe scripts\grounded_demo.py
 .venv\Scripts\python.exe scripts\crew_demo.py
+.venv\Scripts\python.exe scripts\api_demo.py
 .venv\Scripts\python.exe -m ola_support_agent.memory
 .venv\Scripts\python.exe -m ola_support_agent.guardrails
 .venv\Scripts\python.exe -m ola_support_agent.autogen_review
@@ -86,7 +87,7 @@ conversation. `/docs` remains available for API development and testing.
 | Task 8 — multi-turn and fresh-session memory | `src/ola_support_agent/memory.py` | `transcripts/memory_demo.txt`, `transcripts/memory_fresh_session.txt` |
 | Task 9 — structured CrewAI response schema | `src/ola_support_agent/schemas.py` | `transcripts/crew_demo.txt` (schema validation) |
 | Task 10 — PII, injection, and groundedness guardrails | `src/ola_support_agent/guardrails.py` | `transcripts/guardrails.txt` |
-| Tasks 11–12 — FastAPI, JSONL request logging, and WebSocket | `src/ola_support_agent/api.py` | `tests/`, API route docs at `/docs` |
+| Tasks 11–12 — FastAPI, JSONL request logging, and WebSocket | `src/ola_support_agent/api.py` | `transcripts/api_demo.txt` |
 | Task 13 — four-score, 15-query deterministic `MOCK_LLM` judge prompt | `src/ola_support_agent/evaluation_judge.py` | `transcripts/evaluation_judge.txt`, `transcripts/judge_eval.json` |
 | Task 14 — AutoGen review and structured verdicts | `src/ola_support_agent/autogen_review.py` | `transcripts/autogen_review.txt` |
 | Task 15 — least autonomy, risk classification, and request budget | `src/ola_support_agent/governance.py` | `transcripts/governance.txt` |
@@ -96,7 +97,7 @@ Regenerate the transcripts by rerunning the corresponding commands above. The `c
 
 ## Ticket lookup and escalation
 
-The ticket escalation score is `0.6 × escalated + 0.4 × ((30 − days_since_created) / 30)`, clamped to `[0, 1]`. The recommended escalation threshold is **0.65**. With this formula, a ticket must be escalated and no more than 26 days old to meet the threshold.
+The ticket escalation score is `0.6 × escalated + 0.4 × ((30 − days_since_created) / 30)`, clamped to `[0, 1]`. The recommended escalation threshold is **0.65**. With this formula, a ticket must be escalated and no more than 26 days old to meet the threshold. In the generated dataset, 9 of 50 tickets (9 of the 10 escalated tickets) meet the 0.65 threshold.
 
 ## Retrieval and evaluation
 
